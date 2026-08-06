@@ -59,6 +59,29 @@
     margin-bottom:2px;
   }
   .badge .accent{color:var(--red);}
+  .kossa-logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:6px;
+  }
+  .kossa-logo span{
+    font-family:Arial Black,'Segoe UI',sans-serif;
+    font-weight:900;
+    font-size:2.4rem;
+    letter-spacing:1px;
+    color:var(--gold);
+    line-height:1;
+  }
+  .kossa-logo .o-ring{
+    display:inline-block;
+    width:1.55rem;
+    height:1.55rem;
+    border-radius:50%;
+    border:7px solid var(--red);
+    margin:0 1px;
+    box-sizing:border-box;
+  }
   main{
     max-width:900px;
     margin:0 auto;
@@ -279,6 +302,7 @@
 <body>
 
 <header>
+  <div class="kossa-logo"><span>K</span><span class="o-ring"></span><span>SSA</span></div>
   <div class="badge">KOSSA INSTITUTE</div>
   <h1>Informations du joueur<span class="en" style="display:block; text-align:center; margin-top:2px;">(Player Information)</span></h1>
 </header>
