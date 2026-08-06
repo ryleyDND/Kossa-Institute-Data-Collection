@@ -255,12 +255,6 @@
     color:#fff;
     flex:1;
   }
-  .btn-clear{
-    background:transparent;
-    border:2px solid var(--danger);
-    color:var(--danger);
-    flex:1;
-  }
   #toast{
     position:fixed;
     bottom:20px;
@@ -368,7 +362,6 @@
     <h2 style="color:var(--green-dark);">📤 Exporter<span class="en inline"> (Export)</span></h2>
     <div class="export-row">
       <button class="btn-export" id="exportBtn">⬇️ Exporter en CSV<span class="en inline"> (Export to CSV)</span></button>
-      <button class="btn-clear" id="clearBtn">🗑️ Tout effacer<span class="en inline"> (Clear all)</span></button>
     </div>
   </div>
 </main>
@@ -535,15 +528,6 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast('⬇️ Export CSV téléchargé');
-});
-
-document.getElementById('clearBtn').addEventListener('click', async () => {
-  if(players.length === 0) return;
-  if(!confirm('Effacer TOUTES les données enregistrées ? Cette action est irréversible. / Clear ALL data? This cannot be undone.')) return;
-  const { error } = await sb.from('players').delete().neq('id', 0);
-  if(error){ showToast('⚠️ Erreur / Error'); console.error(error); return; }
-  await loadPlayers();
-  showToast('🗑️ Toutes les données ont été effacées');
 });
 
 loadPlayers();
