@@ -153,6 +153,30 @@
     font-size:1.05rem;
     color:#333;
   }
+  .suggestions{
+    display:none;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:#fff;
+    border:2px solid var(--green-mid);
+    border-top:none;
+    border-radius:0 0 10px 10px;
+    max-height:220px;
+    overflow-y:auto;
+    z-index:50;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
+  .suggestions.show{display:block;}
+  .suggestion-item{
+    padding:12px 14px;
+    font-size:1.05rem;
+    cursor:pointer;
+    border-bottom:1px solid #eee;
+  }
+  .suggestion-item:last-child{border-bottom:none;}
+  .suggestion-item:hover, .suggestion-item.active{background:#eef5f0;}
   .radio-btn.selected{
     background:var(--green);
     border-color:var(--green);
@@ -330,10 +354,10 @@
         <label for="equipe">Équipe<span class="en">(Team)</span></label>
         <input type="text" id="equipe" placeholder="Nom de l'équipe">
       </div>
-      <div class="field">
+      <div class="field" style="position:relative;">
         <label for="entraineur">Entraîneur<span class="en">(Coach)</span></label>
-        <input type="text" id="entraineur" list="coachList" placeholder="Nom de l'entraîneur" autocomplete="off">
-        <datalist id="coachList"></datalist>
+        <input type="text" id="entraineur" placeholder="Nom de l'entraîneur" autocomplete="off">
+        <div id="coachSuggestions" class="suggestions"></div>
       </div>
       <div class="field full">
         <label for="tel">N° de téléphone de l'entraîneur<span class="en">(Coach's phone number)</span></label>
@@ -393,15 +417,34 @@ fields.forEach(f => els[f] = document.getElementById(f));
 
 const COACHES = [{"name":"ZOH Datien Marius","phone":"506334206"},{"name":"ZOINI Tyga Cyprien","phone":"545162580"},{"name":"HAIDARA Abdoulaye","phone":"747529066"},{"name":"KALOGOUEU Blekeusse Alphonse","phone":""},{"name":"ASSOBO Edgar Moise","phone":"707026573"},{"name":"ADJO Dekolie Patrick","phone":"707360990"},{"name":"KOUADIO Kouame Amadou","phone":"504322715"},{"name":"HOBA Guy","phone":"704277609"},{"name":"YOUAN BI Daniel","phone":"778272157"},{"name":"BOHUI Obrou Daniel","phone":"173034510"},{"name":"OPELI Danielle Claverie","phone":"787143640"},{"name":"KONE MOHAMED","phone":"545447402"},{"name":"KONE YACOUBA","phone":"707885933"},{"name":"KONE BAKARY","phone":"506174776"},{"name":"KONE INZA","phone":"506386451"},{"name":"GOLI KOUASSI ACHILE","phone":"758564059"},{"name":"GNABOROU DADE FERDINAND","phone":"505057573"},{"name":"DJEDJE TARIBO YOLOU","phone":"596055983"},{"name":"ZADI PACOME","phone":"758906546"},{"name":"ADOUHI OUAGA PRINCE","phone":"153172403"},{"name":"DJIROBO SAINT PIERRE","phone":"170172769"},{"name":"HARDING KIPLE HUGES","phone":"506385050"},{"name":"DIARRA AROUNA","phone":"586764028"},{"name":"ESANA AHIZICHUKWU","phone":"161494562"},{"name":"TOURE ALASSANE","phone":"709523760"},{"name":"KOUAKOU KOUADIO E","phone":"709739723"},{"name":"DOUMBIA DRISSA","phone":"555873052"},{"name":"GNHITE EVRE","phone":"708480883"},{"name":"YAO KOFFI MARC","phone":"779350838"},{"name":"CISSE SOULEYMANE","phone":"789877679"},{"name":"ZEBEYOU GROGLY MICHEL","phone":"707956805"},{"name":"GNESSOA HERVE","phone":"799202362"},{"name":"KOFFI KOUASSI GEORGES","phone":"172508932"},{"name":"DAGNOGO DAOUDA","phone":"101893238"},{"name":"KRAGBA DANON JEAN IVES","phone":"701733644"},{"name":"SEPELE TETLY NOE","phone":"140332035"},{"name":"KRAGBA DJIDJI","phone":"544312585"},{"name":"MAPRI ERIC GERVAIS JUNIOR","phone":"708718873"},{"name":"KPOKOU GADO FERDINAND","phone":"707670220"},{"name":"TOURE ISSA","phone":"778779086"},{"name":"DIORI Djibrilla","phone":"759127718"},{"name":"YAO Kouassi Severin","phone":"788020860"},{"name":"Apouri Jean","phone":"505664709"},{"name":"MAIGA Ali","phone":"22372237161"},{"name":"BOUARE Ibrahim","phone":"544272452"},{"name":"TOURE Bakari","phone":"566710501"},{"name":"KONE Ousmane","phone":"504450405"},{"name":"TRAORE Moussa","phone":"779387405"},{"name":"AIDARA Abdoulaye","phone":"546454780"},{"name":"CISSA Abdoulaye","phone":"506856050"},{"name":"MION Marius","phone":"707091326"},{"name":"ARINLOYE Koudous","phone":"504136590"},{"name":"FOFANA Abass","phone":"779282071"},{"name":"KAMAGATE Abdoul Razak","phone":"153506581"},{"name":"SARAKA Toure Ibrahima Yao","phone":"545444928"},{"name":"DIAKITE Aroune","phone":"758234506"},{"name":"KONE Kiyali yaya","phone":"779663898"},{"name":"KOUASSI Theophile","phone":"506361577"},{"name":"KOFFI Abel","phone":"757124424"},{"name":"TOURE Dina Zeynab","phone":"564497072"},{"name":"BAKO Ousmane","phone":"708938200"},{"name":"KEIZA Sekou","phone":""},{"name":"MOBIO Pierre","phone":"707677126"},{"name":"AMANI Jean Paul","phone":"500173828"},{"name":"ATTA Olivier","phone":"140841614"},{"name":"N;GUESSAN Desiré","phone":"749974788"},{"name":"KONE Yssouf","phone":"101145054"},{"name":"KOFFI Antoine","phone":"707436100"},{"name":"COULIBALY Gaucher","phone":"544416302"},{"name":"DOUMBIA Sory","phone":"758834720"},{"name":"KOFFI Jonas","phone":"170765916"},{"name":"ADJIBADE Hussein","phone":"748828566"},{"name":"Tiote Abdoulaye","phone":"708873664"},{"name":"BAMBA Siaka","phone":"173946206"},{"name":"Kone Augustin","phone":"565277607"},{"name":"Diaouara Housseni Karamoko","phone":"748277457"},{"name":"Kouame Koffi Stephane","phone":"748498982"},{"name":"Kadjane Yenance","phone":"712476967"}];
 
-const coachDatalist = document.getElementById('coachList');
-coachDatalist.innerHTML = COACHES.map(c => `<option value="${c.name.replace(/"/g,'&quot;')}">`).join('');
+const coachSuggestions = document.getElementById('coachSuggestions');
 
-els.entraineur.addEventListener('input', () => {
-  const match = COACHES.find(c => c.name.toLowerCase() === els.entraineur.value.trim().toLowerCase());
-  if(match && match.phone){
-    els.tel.value = match.phone;
-  }
-});
+function selectCoach(coach){
+  els.entraineur.value = coach.name;
+  if(coach.phone){ els.tel.value = coach.phone; }
+  hideSuggestions();
+}
+
+function showSuggestions(){
+  const q = els.entraineur.value.trim().toLowerCase();
+  const matches = (q ? COACHES.filter(c => c.name.toLowerCase().includes(q)) : COACHES).slice(0, 20);
+  if(matches.length === 0){ hideSuggestions(); return; }
+  coachSuggestions.innerHTML = matches.map((c,i) =>
+    `<div class="suggestion-item" data-idx="${i}">${escapeHtml(c.name)}</div>`
+  ).join('');
+  coachSuggestions.querySelectorAll('.suggestion-item').forEach((el,i) => {
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); selectCoach(matches[i]); });
+  });
+  coachSuggestions.classList.add('show');
+}
+
+function hideSuggestions(){
+  coachSuggestions.classList.remove('show');
+}
+
+els.entraineur.addEventListener('input', showSuggestions);
+els.entraineur.addEventListener('focus', showSuggestions);
+els.entraineur.addEventListener('blur', () => setTimeout(hideSuggestions, 150));
 
 const genreGroup = document.getElementById('genre-group');
 genreGroup.querySelectorAll('.radio-btn').forEach(btn => {
